@@ -7,9 +7,9 @@ WiiMart Patcher helps you patch your **WBFS (disc) games** to make them compatib
 
 ---
 
-## 🧩 Usage
+## Usage
 
-### 🐧 Linux
+### Linux
 
 1. **Download** the **static build** of WiiMart Patcher.  
 
@@ -44,13 +44,13 @@ WiiMart Patcher helps you patch your **WBFS (disc) games** to make them compatib
 
 ---
 
-### 🪟 Windows
+### Windows
 
 Support is **coming soon** — some fixes are still in progress.
 
 ---
 
-### 🍎 macOS
+### macOS
 
 Unfortunately, **macOS is not supported** at this time.
 
