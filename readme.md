@@ -1,19 +1,59 @@
 # WiiMart Patcher
 
-WiiMart patcher helps you patch your wbfs games (disk games) to work with dlc. This also implements Wiimmfi due to issues if we were to remain on nintendo wifi urls.
+<img src="https://wiimart.org/media/branding-bag-no-bg.png" width="100" height="100" align="right" />
 
-## Usage
-How to use:
- - On linux:
-   1. Download the static build of the patcher as it contains all the librairies you need, no need to install dependencies.
-   2. Run `./WiiMartPatcher --init` to create the required folders 
-   3. Download the latest version of <a href="https://wit.wiim.de/download.html">Wit</a> and unzip it.<br>
-    3a. Drop the contents of the unzipped folder in the wit directory that WiiMartPatcher created for you (making sure that ./wit/bin/wit exists since thats where it looks for the executable)<br>
-    3b. Place the folders in a known place and use --wit-path /path/to/wit (making sure that /path/to/wit/bin/wit exists since it'll look for the executable there)<br>
-    3c. Place the folder in a known place and add /path/to/wit/bin and make sure that you can execute wit without being in that path<br>
-   4. Drop all wbfs files in the folder wbfs that the WiiMartPatcher created.
-   5. Start patching! (aka just run `./WiiMartPatcher`)
- - On Windows:
-   - Coming soon, gotta fix it
- - Mac will NOT be supported, sorry mac users.
+WiiMart Patcher helps you patch your **WBFS (disc) games** to make them compatible with **DLC content** and **Wiimmfi**.  
 
+
+---
+
+## 🧩 Usage
+
+### 🐧 Linux
+
+1. **Download** the **static build** of WiiMart Patcher.  
+
+2. **Initialize the project structure**:
+   ```bash
+   ./WiiMartPatcher --init
+   ```
+   This creates all required folders (e.g. `wit/`, `wbfs/`, etc.).
+
+3. **Download the latest version of [WIT (Wiimms ISO Tools)](https://wit.wiimm.de/download.html)** and unzip it.  
+   You have three options to make WIT available:
+   - **Option A:** Drop the extracted WIT files into the folder created by WiiMart Patcher.  
+     Ensure the executable exists at:
+     ```
+     ./wit/bin/wit
+     ```
+   - **Option B:** Use a custom path with the `--wit-path` flag:
+     ```bash
+     ./WiiMartPatcher --wit-path /path/to/wit
+     ```
+     Make sure `/path/to/wit/bin/wit` exists.
+   - **Option C:** Add WIT to your system’s PATH:  
+     Add `/path/to/wit/bin` to your PATH variable and verify that `wit` runs from anywhere.
+
+4. **Place your `.wbfs` files** inside the `wbfs/` folder created by WiiMart Patcher.
+
+5. **Start patching!**  
+   Simply run:
+   ```bash
+   ./WiiMartPatcher
+   ```
+
+---
+
+### 🪟 Windows
+
+Support is **coming soon** — some fixes are still in progress.
+
+---
+
+### 🍎 macOS
+
+Unfortunately, **macOS is not supported** at this time.
+
+---
+
+*The WiiMart Team is not affiliated with Nintendo or any related parties. For inquiries, contact us at **support@wiimart.org**.*
