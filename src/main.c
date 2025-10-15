@@ -20,7 +20,11 @@ void helpmenu(char *appname){
 int main(int argc, char *argv[]) {
     char *witpath = "wit";
     bool witset = false;
+    #ifdef _WIN32
+    char *wbfspath = ".\\wbfs";
+    #else
     char *wbfspath = "./wbfs";
+    #endif
     if (argc == 2) {
         if (strcmp(argv[1], "--help") == 0) {
             helpmenu(argv[0]);
@@ -59,32 +63,65 @@ int main(int argc, char *argv[]) {
     }
     printf("Checking dependencies...\n");
     printf(" - Checking for Wit ");
+    #ifdef _WIN32
+    if (system("wit --help > NUL 2> NUL") != 0) {
+    #else
     if (system("wit --help > /dev/null 2> /dev/null") != 0) {
+    #endif
         if (witset == true){
             printf("ERROR\nWit is NOT installed in PATH.\nChecking in %s for wit\n", witpath);
             char command[512];
+            #ifdef _WIN32
+            snprintf(command, sizeof(command), "%s\\bin\\wit.exe --help > NUL 2> NUL", witpath);
+            #else
             snprintf(command, sizeof(command), "%s/bin/wit --help > /dev/null 2> /dev/null", witpath);
-            if (system(command) != 0) {
+            #endif
+            if (system(command) != 0) { 
+                #ifdef _WIN32
+                printf("Wit is NOT installed in %s.\nChecking in .\\wit for wit\n", witpath);
+                if (system(".\\wit\\bin\\wit.exe --help > NUL 2> NUL") != 0) {
+                #else
                 printf("Wit is NOT installed in %s.\nChecking in ./wit for wit\n", witpath);
                 if (system("./wit/bin/wit --help > /dev/null 2> /dev/null") != 0) {
+                #endif
+                    #ifdef _WIN32
+                    printf("Wit is NOT installed in .\\wit .\nPlease install Wit or extract it in .\\wit .\nIf you do have Wit installed but is not in PATH or .\\wit , specify it with --wit-path and then the path to wit.\n");
+                    system("start https://wit.wiimm.de/download.html");
+                    #else
                     printf("Wit is NOT installed in ./wit .\nPlease install Wit or extract it in ./wit .\nIf you do have Wit installed but is not in PATH or ./wit , specify it with --wit-path and then the path to wit.\n");
                     system("xdg-open https://wit.wiimm.de/download.html");
+                    #endif
                     printf("If your browser didnt open, go to https://wit.wiim.de/download.html to download Wit\n");
                     return -1;
                 }
+                #ifdef _WIN32
+                witpath = ".\\wit\\bin\\wit.exe";
+                #else
                 witpath = "./wit/bin/wit";
+                #endif
                 printf("Found Wit, Continuing...\n");
             }
             printf("Found Wit, Continuing...\n");
         } else {
+            #ifdef _WIN32
+            printf("ERROR\nWit is NOT installed in PATH.\nChecking in .\\wit for wit\n");
+            if (system(".\\wit\\bin\\wit.exe --help > NUL 2> NUL") != 0) {
+                printf("Wit is NOT installed in .\\wit .\nPlease install Wit or extract it in .\\wit .\nIf you do have Wit installed but is not in PATH or .\\wit , specify it with --wit-path and then the path to wit.\n");
+                system("start https://wit.wiimm.de/download.html");
+            #else
             printf("ERROR\nWit is NOT installed in PATH.\nChecking in ./wit for wit\n");
             if (system("./wit/bin/wit --help > /dev/null 2> /dev/null") != 0) {
                 printf("Wit is NOT installed in ./wit .\nPlease install Wit or extract it in ./wit .\nIf you do have Wit installed but is not in PATH or ./wit , specify it with --wit-path and then the path to wit.\n");
                 system("xdg-open https://wit.wiimm.de/download.html");
+            #endif
                 printf("If your browser didnt open, go to https://wit.wiim.de/download.html to download Wit\n");
                 return -1;
             }
+            #ifdef _WIN32
+            witpath = ".\\wit\\bin\\wit.exe";
+            #else
             witpath = "./wit/bin/wit";
+            #endif
             printf("Found Wit, Continuing...\n");
         }
     } else {
@@ -97,8 +134,13 @@ int main(int argc, char *argv[]) {
         if (validver == INVALID_VERSION) {
             printf(err2str(validver));
             printf("\n");
+            #ifdef _WIN32
+            downloader(versionurl, ".\\version.txt");
+            downloader(gamesurl, ".\\games.ini");
+            #else
             downloader(versionurl, "./version.txt");
             downloader(gamesurl, "./games.ini");
+            #endif
             validver = isvalid();
             if (validver < 0) {
                 printf("There is an issue with the version.\nPlease delete both version.txt and games.ini and restart the program.\n");
@@ -108,7 +150,13 @@ int main(int argc, char *argv[]) {
         } else if (validver == FILE_NOT_EXIST || validver == FILE_FAIL_OPEN) { 
             printf(err2str(validver));
             printf("\n");
+            #ifdef _WIN32
+            downloader(versionurl, ".\\version.txt");
+            downloader(gamesurl, ".\\games.ini");
+            #else
             downloader(versionurl, "./version.txt");
+            downloader(gamesurl, "./games.ini");
+            #endif
             validver = isvalid();
             if (validver < 0) {
                 printf("There is an issue with the version.\nPlease delete both version.txt and games.ini and restart the program.\n");

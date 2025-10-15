@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <curl/curl.h>
+
 #include "ini.h"
 #include "data.h"   
 #include "errors.h"  
@@ -290,7 +291,11 @@ int curver(void) {
 
 int version(void) {
     FILE *file;
+    #ifdef _WIN32
+    file = fopen(".\\version.txt", "r");
+    #else
     file = fopen("./version.txt", "r");
+    #endif
     if (!file) {
         return FILE_FAIL_OPEN;
     }
@@ -319,13 +324,22 @@ int isvalid(void) {
     return 0;
 } 
 
-
+#ifdef _WIN32
+const char *needyfucks[] = {
+    ".\\wbfs",    
+    ".\\wit",     
+    ".\\final",    
+    ".\\data",
+};
+#else
 const char *needyfucks[] = {
     "./wbfs",    
     "./wit",     
     "./final",    
     "./data",
 };
+#endif
+
 
 int makedirifmissing(const char *path) {
     #ifdef _WIN32
@@ -401,17 +415,31 @@ void patchgame(const char *wbfsgamepath, char *wit_exec) {
 
     get_cust_patch(game_id, &patch_data);
     
-    snprintf(extract_dest, sizeof(extract_dest), "./data/%s", game_id);
+    #ifdef _WIN32
+        snprintf(extract_dest, sizeof(extract_dest), ".\\data\\%s", game_id);
+    #else
+        snprintf(extract_dest, sizeof(extract_dest), "./data/%s", game_id);
+    #endif
+
     printf("Extracting...\n");
     
+    #ifdef _WIN32
+    snprintf(command, sizeof(command), "%s extract \"%s\" --dest \"%s\" > NUL 2> NUL", 
+             wit_exec, wbfsgamepath, extract_dest);
+    #else
     snprintf(command, sizeof(command), "%s extract \"%s\" --dest \"%s\" > /dev/null 2>&1", 
              wit_exec, wbfsgamepath, extract_dest);
-             
+    #endif         
     if (system(command) != 0) {
         printf("Fail: could not extract the game.\n");
         return;
     }
-    snprintf(dol_file_path, sizeof(dol_file_path), "%s/sys/main.dol", extract_dest);
+    #ifdef _WIN32
+        snprintf(dol_file_path, sizeof(dol_file_path), "%s\\sys\\main.dol", extract_dest);
+    #else
+        snprintf(dol_file_path, sizeof(dol_file_path), "%s/sys/main.dol", extract_dest);
+    #endif
+
     printf("Patching...\n");
     struct {
         const char *original;
@@ -462,17 +490,29 @@ void patchgame(const char *wbfsgamepath, char *wit_exec) {
 
     printf("Re-Compressing...\n");
     char final_path[MAX_PATH];
-    snprintf(final_path, sizeof(final_path), "./final/%s-patched.wbfs", game_id);
+    #ifdef _WIN32
+        snprintf(final_path, sizeof(final_path), ".\\final\\%s-patched.wbfs", game_id);
+    #else
+        snprintf(final_path, sizeof(final_path), "./final/%s-patched.wbfs", game_id);
+    #endif
     
+    #ifdef _WIN32
+    snprintf(command, sizeof(command), "%s copy \"%s\" \"%s\" > NUL 2> NUL", 
+             wit_exec, extract_dest, final_path);
+    #else
     snprintf(command, sizeof(command), "%s copy \"%s\" \"%s\" > /dev/null 2>&1", 
              wit_exec, extract_dest, final_path);
-             
+    #endif         
     if (system(command) != 0) {
         printf("Fail: Could not re-compress.\n");
         return;
     }
 
+    #ifdef _WIN32
+    snprintf(command, sizeof(command), "RD /S /Q \"%s\"", extract_dest);
+    #else
     snprintf(command, sizeof(command), "rm -rf \"%s\"", extract_dest);
+    #endif
     system(command);
 }
 
@@ -498,7 +538,11 @@ void patchgames(const char *wbfspath, char *wit_exec) {
                              strcasecmp(entry->d_name + name_len - 4, ".iso") == 0)) {
             
             char full_wbfs_path[MAX_PATH];
-            snprintf(full_wbfs_path, sizeof(full_wbfs_path), "%s/%s", wbfspath, entry->d_name);
+            #ifdef _WIN32
+                snprintf(full_wbfs_path, sizeof(full_wbfs_path), "%s\\%s", wbfspath, entry->d_name);
+            #else
+                snprintf(full_wbfs_path, sizeof(full_wbfs_path), "%s/%s", wbfspath, entry->d_name);
+            #endif
             
             printf("File: %s\n", entry->d_name);
             patchgame(full_wbfs_path, wit_exec);
