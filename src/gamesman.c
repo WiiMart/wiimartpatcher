@@ -343,7 +343,7 @@ const char *needyfucks[] = {
 
 int makedirifmissing(const char *path) {
     #ifdef _WIN32
-        if (_mkdir(path) == 0) {
+        if (mkdir(path) == 0) {
             return 0;
         }
     #else
