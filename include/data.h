@@ -6,8 +6,8 @@
 #define GAMES_LIST "games.ini"
 
 //* Urls for updated games.ini and version.txt (might get depricated)
-static char *versionurl = "https://patcher.thomisacheeseball.org/version.txt";
-static char *gamesurl = "https://patcher.thomisacheeseball.org/games.ini";
+static char *versionurl = "https://wiimart.org/patcher/version.txt";
+static char *gamesurl = "https://wiimart.org/patcher/games.ini";
 
 //* Main url
 static char oldurl[51] = "https://ecs.shop.wii.com/ecs/services/ECommerceSOAP";

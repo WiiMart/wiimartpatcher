@@ -93,7 +93,7 @@ static int str_patch(const char *filename, const char *old_data, const void *new
     offset = found_ptr - buffer;
     free(buffer); 
 
-    printf("  Found the Url's offset.\n", old_data, offset);
+    printf("  Found the Url's offset.\n");
 
     if (patch_size > strlen((const char *)new_data)) {
         char *patch_buffer = (char *)malloc(old_size);

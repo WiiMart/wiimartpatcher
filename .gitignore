@@ -1,6 +1,5 @@
 test/*
-obj/*
-obj_win*/*
+obj_*/*
 WiiMartPatcher*
 WiiMartPatcher-static*
 games.ini
