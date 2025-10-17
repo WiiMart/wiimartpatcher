@@ -19,7 +19,7 @@ WiiMart Patcher helps you patch your **WBFS (disc) games** to make them compatib
    ```
    This creates all required folders (e.g. `wit/`, `wbfs/`, etc.).
 
-3. **Download the latest version of [WIT (Wiimms ISO Tools)](https://wit.wiimm.de/download.html)** and unzip it.  
+3. **Download the latest version of [WIT (Wiimms ISO Tools)](https://wit.wiimm.de/download.html)** and unzip it but do **NOT** run the installer.  
    You have three options to make WIT available:
    - **Option A:** Drop the extracted WIT files into the folder created by WiiMart Patcher.  
      Ensure the executable exists at:
@@ -46,7 +46,36 @@ WiiMart Patcher helps you patch your **WBFS (disc) games** to make them compatib
 
 ### Windows
 
-Support is **coming soon** — some fixes are still in progress.
+1. **Download** the **static build** of WiiMart Patcher.  
+
+2. **Initialize the project structure**:
+   ```
+   .\WiiMartPatcher.exe --init
+   ```
+   This creates all required folders (e.g. `wit\`, `wbfs\`, etc.).
+
+3. **Download the latest version of [WIT (Wiimms ISO Tools)](https://wit.wiimm.de/download.html)** and unzip it but do **NOT** run the installer.  
+   You have three options to make WIT available:
+   - **Option A:** Drop the extracted WIT files into the folder created by WiiMart Patcher.  
+     Ensure the executable exists at:
+     ```
+     .\wit\bin\wit.exe
+     ```
+   - **Option B:** Use a custom path with the `--wit-path` flag:
+     ```
+     .\WiiMartPatcher --wit-path C:\path\to\wit
+     ```
+     Make sure `C:\path\to\wit\bin\wit.exe` exists.
+   - **Option C:** Add WIT to your system’s PATH:  
+     Add `C:\path\to\wit\bin` to your PATH variable and verify that `wit` runs from anywhere.
+
+4. **Place your `.wbfs` files** inside the `wbfs\` folder created by WiiMart Patcher.
+
+5. **Start patching!**  
+   Simply run:
+   ```
+   .\WiiMartPatcher.exe
+   ```
 
 ---
 

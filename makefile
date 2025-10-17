@@ -11,22 +11,30 @@ LDFLAGS_DYNAMIC :=
 LDFLAGS_STATIC := -static
 LDFLAGS_CROSS_STATIC := -static -static-libgcc -static-libstdc++
 
-CROSS_CFLAGS := $(CFLAGS) -DCURL_STATICLIB
-CROSS_CXXFLAGS := $(CXXFLAGS) -DCURL_STATICLIB
+CROSS_CFLAGS_64 := $(CFLAGS) -DCURL_STATICLIB -D_WIN32_WINNT=0x0502
+CROSS_CXXFLAGS_64 := $(CXXFLAGS) -DCURL_STATICLIB -D_WIN32_WINNT=0x0502
+CROSS_CFLAGS_32 := $(CFLAGS) -DCURL_STATICLIB -D_WIN32_WINNT=0x0501
+CROSS_CXXFLAGS_32 := $(CXXFLAGS) -DCURL_STATICLIB -D_WIN32_WINNT=0x0501
 
 LIBS := -lcurl -lssh2 -lpsl -lssl -lcrypto -lgssapi_krb5 -lldap -llber -lbrotlidec -lpthread -lrt -lidn2 -lunistring -lz -lnghttp2 -ldl
 
 # Win Cross Compile Defs
-CROSS_TRIPLE := x86_64-w64-mingw32
-CROSS_CC := $(CROSS_TRIPLE)-gcc
-CROSS_CXX := $(CROSS_TRIPLE)-g++
-CROSS_TARGET := $(TARGET).exe
+CROSS_TRIPLE_64 := x86_64-w64-mingw32
+CROSS_CC_64 := $(CROSS_TRIPLE_64)-gcc
+CROSS_CXX_64 := $(CROSS_TRIPLE_64)-g++
+CROSS_TARGET_64 := $(TARGET)_x64.exe
+
+CROSS_TRIPLE_32 := i686-w64-mingw32
+CROSS_CC_32 := $(CROSS_TRIPLE_32)-gcc
+CROSS_CXX_32 := $(CROSS_TRIPLE_32)-g++
+CROSS_TARGET_32 := $(TARGET)_x86.exe
 
 # Dir Placements
 SRC_DIR := src
 INC_DIR := ./include
 OBJ_DIR := obj
-CROSS_OBJ_DIR := obj_win
+CROSS_OBJ_DIR_64 := obj_win64
+CROSS_OBJ_DIR_32 := obj_win32
 
 SRCS := $(wildcard $(SRC_DIR)/*.c $(SRC_DIR)/*.cpp)
 
@@ -35,8 +43,11 @@ OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(filter %.c,$(SRCS)))
 OBJS += $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(filter %.cpp,$(SRCS)))
 
 # Windows Obj
-CROSS_OBJS := $(patsubst $(SRC_DIR)/%.c,$(CROSS_OBJ_DIR)/%.o,$(filter %.c,$(SRCS)))
-CROSS_OBJS += $(patsubst $(SRC_DIR)/%.cpp,$(CROSS_OBJ_DIR)/%.o,$(filter %.cpp,$(SRCS)))
+CROSS_OBJS_64 := $(patsubst $(SRC_DIR)/%.c,$(CROSS_OBJ_DIR_64)/%.o,$(filter %.c,$(SRCS)))
+CROSS_OBJS_64 += $(patsubst $(SRC_DIR)/%.cpp,$(CROSS_OBJ_DIR_64)/%.o,$(filter %.cpp,$(SRCS)))
+
+CROSS_OBJS_32 := $(patsubst $(SRC_DIR)/%.c,$(CROSS_OBJ_DIR_32)/%.o,$(filter %.c,$(SRCS)))
+CROSS_OBJS_32 += $(patsubst $(SRC_DIR)/%.cpp,$(CROSS_OBJ_DIR_32)/%.o,$(filter %.cpp,$(SRCS)))
 
 INCLUDES := -I$(INC_DIR)
 
@@ -50,8 +61,11 @@ all: clean dynamic
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
-$(CROSS_OBJ_DIR):
-	@mkdir -p $(CROSS_OBJ_DIR)
+$(CROSS_OBJ_DIR_64):
+	@mkdir -p $(CROSS_OBJ_DIR_64)
+
+$(CROSS_OBJ_DIR_32):
+	@mkdir -p $(CROSS_OBJ_DIR_32)
 
 
 # Native building
@@ -86,17 +100,33 @@ $(TARGET)-intern: $(OBJ_DIR) $(OBJS)
 
 # Windows
 
-cross-windows: clean-cross $(CROSS_OBJ_DIR) $(CROSS_TARGET)
+cross-windows: cross-windows-64 cross-windows-32
 
- $(CROSS_TARGET): $(CROSS_OBJS)
-	$(CROSS_CXX) $(LDFLAGS_CROSS_STATIC) $(CROSS_OBJS) `$(CROSS_TRIPLE)-pkg-config --static --libs libcurl | sed 's/-R[^ ]*//g'` -o $@
+cross-windows-64: clean-cross-64 $(CROSS_OBJ_DIR_64) $(CROSS_TARGET_64)
 
-$(CROSS_OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CROSS_CC) $(CROSS_CFLAGS) $(INCLUDES) -c $< -o $@
+cross-windows-32: clean-cross-32 $(CROSS_OBJ_DIR_32) $(CROSS_TARGET_32)
 
-$(CROSS_OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CROSS_CXX) $(CROSS_CXXFLAGS) $(INCLUDES) -c $< -o $@
+$(CROSS_TARGET_64): $(CROSS_OBJS_64)
+	$(CROSS_CXX_64) $(LDFLAGS_CROSS_STATIC) $(CROSS_OBJS_64) \
+	`$(CROSS_TRIPLE_64)-pkg-config --static --libs libcurl | sed 's/-R[^ ]*//g'` \
+	-o $@
 
+$(CROSS_OBJ_DIR_64)/%.o: $(SRC_DIR)/%.c
+	$(CROSS_CC_64) $(CROSS_CFLAGS_64) $(INCLUDES) -c $< -o $@
+
+$(CROSS_OBJ_DIR_64)/%.o: $(SRC_DIR)/%.cpp
+	$(CROSS_CXX_64) $(CROSS_CXXFLAGS_64) $(INCLUDES) -c $< -o $@
+
+$(CROSS_TARGET_32): $(CROSS_OBJS_32)
+	$(CROSS_CXX_32) $(LDFLAGS_CROSS_STATIC) $(CROSS_OBJS_32) \
+	`$(CROSS_TRIPLE_32)-pkg-config --static --libs libcurl | sed 's/-R[^ ]*//g'` \
+	-o $@
+
+$(CROSS_OBJ_DIR_32)/%.o: $(SRC_DIR)/%.c
+	$(CROSS_CC_32) $(CROSS_CFLAGS_32) $(INCLUDES) -c $< -o $@
+
+$(CROSS_OBJ_DIR_32)/%.o: $(SRC_DIR)/%.cpp
+	$(CROSS_CXX_32) $(CROSS_CXXFLAGS_32) $(INCLUDES) -c $< -o $@
 
 # Cleanup
 
@@ -106,7 +136,12 @@ clean: clean-native clean-cross
 clean-native:
 	@rm -rf $(OBJ_DIR)
 
-clean-cross:
-	@rm -rf $(CROSS_OBJ_DIR) $(CROSS_TARGET)
+clean-cross: clean-cross-64 clean-cross-32
+
+clean-cross-64:
+	@rm -rf $(CROSS_OBJ_DIR_64) $(CROSS_TARGET_64)
+
+clean-cross-32:
+	@rm -rf $(CROSS_OBJ_DIR_32) $(CROSS_TARGET_32)
 
 doall: clean dynamic static cross-windows

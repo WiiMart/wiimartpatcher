@@ -100,8 +100,9 @@ int main(int argc, char *argv[]) {
                 witpath = "./wit/bin/wit";
                 #endif
                 printf("Found Wit, Continuing...\n");
+            } else {
+                printf("Found Wit, Continuing...\n");
             }
-            printf("Found Wit, Continuing...\n");
         } else {
             #ifdef _WIN32
             printf("ERROR\nWit is NOT installed in PATH.\nChecking in .\\wit for wit\n");

@@ -204,6 +204,9 @@ int downloader(char *url, char *filen) {
     curl_easy_setopt(curl_handle, CURLOPT_URL, url);
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
+
+    curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 0L);
     
     res = curl_easy_perform(curl_handle);
 
@@ -265,8 +268,8 @@ int curver(void) {
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk); 
 
-    curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 1L);
-    curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 2L);
+    curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 0L);
 
     res = curl_easy_perform(curl_handle);
 
