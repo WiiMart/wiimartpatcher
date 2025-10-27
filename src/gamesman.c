@@ -314,10 +314,10 @@ int version(void) {
 int isvalid(void) {
     int ver = curver();
     int currver = version();
-    if (ver < 0) {
-        return ver;
+    if (currver < 0) {
+        return currver;
     } else {
-        if (currver < 0) {
+        if (ver < 0) {
             return currver;
         }
         if (ver != currver) {
