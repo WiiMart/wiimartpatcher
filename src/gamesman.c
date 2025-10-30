@@ -427,10 +427,10 @@ void patchgame(const char *wbfsgamepath, char *wit_exec) {
     printf("Extracting...\n");
     
     #ifdef _WIN32
-    snprintf(command, sizeof(command), "%s extract \"%s\" --dest \"%s\" > NUL 2> NUL", 
+    snprintf(command, sizeof(command), "%s extract \"%s\" --dest \"%s\" --psel=DATA > NUL 2> NUL", 
              wit_exec, wbfsgamepath, extract_dest);
     #else
-    snprintf(command, sizeof(command), "%s extract \"%s\" --dest \"%s\" > /dev/null 2>&1", 
+    snprintf(command, sizeof(command), "%s extract \"%s\" --dest \"%s\" --psel=DATA > /dev/null 2>&1", 
              wit_exec, wbfsgamepath, extract_dest);
     #endif         
     if (system(command) != 0) {

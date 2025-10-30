@@ -4,3 +4,5 @@ WiiMartPatcher*
 WiiMartPatcher-static*
 games.ini
 version.txt
+Patcher/*
+patcher/
