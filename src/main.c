@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
                     printf("Wit is NOT installed in ./wit .\nPlease install Wit or extract it in ./wit .\nIf you do have Wit installed but is not in PATH or ./wit , specify it with --wit-path and then the path to wit.\n");
                     system("xdg-open https://wit.wiimm.de/download.html");
                     #endif
-                    printf("If your browser didnt open, go to https://wit.wiim.de/download.html to download Wit\n");
+                    printf("If your browser did not open, go to https://wit.wiimm.de/download.html to download Wit.\n");
                     return -1;
                 }
                 #ifdef _WIN32
