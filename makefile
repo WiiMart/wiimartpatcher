@@ -39,23 +39,32 @@ CFLAGS   := -Wall -g -std=c11
 CXXFLAGS := -Wall -g -std=c++17
 
 # =========================
-#  Default 'all' targets per host
+#  "native" vs "all" behavior
 # =========================
+
+# NATIVE_TARGET: what plain "make" builds on this host
+# ALL_TARGETS:   what "make all" will try to build
 ifeq ($(HOST_OS),Darwin)
-  # On macOS: build mac (native), windows (cross), and linux-docker (static Linux)
-  DEFAULT_TARGETS := mac windows linux-docker
+  NATIVE_TARGET := mac
+  ALL_TARGETS   := mac windows linux-docker
 else ifeq ($(HOST_OS),Linux)
-  # On Linux: build native Linux + Windows cross
-  DEFAULT_TARGETS := linux windows
+  NATIVE_TARGET := linux
+  ALL_TARGETS   := linux windows
 else
-  # On Windows: just build Windows
-  DEFAULT_TARGETS := windows
+  # Windows host
+  NATIVE_TARGET := windows
+  ALL_TARGETS   := windows
 endif
 
-.PHONY: all mac linux linux-docker windows \
+.PHONY: native all mac linux linux-docker windows \
         clean clean-mac clean-linux clean-linux-docker clean-windows
 
-all: $(DEFAULT_TARGETS)
+# Default goal when you just run "make"
+.DEFAULT_GOAL := native
+
+native: $(NATIVE_TARGET)
+
+all: $(ALL_TARGETS)
 
 # =========================
 #  macOS native build
@@ -242,8 +251,8 @@ CROSS_CXX_32    := $(CROSS_TRIPLE_32)-g++
 WIN_BIN_32      := $(TARGET)_win_x86.exe
 
 # Where your static libcurl builds live for MinGW.
-# You can override these on the command line or env if needed.
-# e.g. MINGW_WIN64_PREFIX=/opt/mingw64 MINGW_WIN32_PREFIX=/opt/mingw32
+# Override if needed:
+#   MINGW_WIN64_PREFIX=/opt/mingw64 MINGW_WIN32_PREFIX=/opt/mingw32
 MINGW_WIN64_PREFIX ?= $(HOME)/mingw-win64-root
 MINGW_WIN32_PREFIX ?= $(HOME)/mingw-win32-root
 
