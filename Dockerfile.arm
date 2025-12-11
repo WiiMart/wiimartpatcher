@@ -1,4 +1,3 @@
-#3rd time that i change of os.
 FROM alpine:latest
 
 RUN apk update && apk add --no-cache \
@@ -20,3 +19,4 @@ RUN apk update && apk add --no-cache \
     zstd-static
 
 WORKDIR /app
+

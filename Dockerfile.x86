@@ -12,6 +12,7 @@ RUN apk update && apk add --no-cache \
     zlib-static \
     brotli-static \
     nghttp2-static \
+    nghttp3-static \
     libpsl-static \
     libidn2-static \
     libunistring-static \
