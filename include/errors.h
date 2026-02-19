@@ -11,6 +11,9 @@ static const int FILE_WRITE_FAIL = -204;
 static const int FILE_CLOSE_FAIL = -205;
 static const int INVALID_VERSION = -301;
 static const int STRING_NOT_FOUND = -401;
+static const int URL_TOO_LONG = -501;
+static const int URL_NOT_FOUND = -502;
+static const int URL_NOT_PROVIDED = -503;
 
 extern char ADDRES[256];
 

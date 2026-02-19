@@ -41,6 +41,15 @@ const char* err2str(int err) {
         case -401:
             val = "String not found.";
             break;
+        case -501:
+            val = "URL too long: replacement URL exceeds the length of the original. Binary patching requires new URL <= old URL length.";
+            break;
+        case -502:
+            val = "URL not found in file.";
+            break;
+        case -503:
+            val = "No URL provided for custom URL entry.";
+            break;
         default:
             val = "Unknown error.";
             break;

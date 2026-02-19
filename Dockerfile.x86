@@ -1,4 +1,4 @@
-FROM i386/alpine:latest
+FROM i386/alpine:3.18
 
 RUN apk update && apk add --no-cache \
     build-base \
@@ -16,5 +16,5 @@ RUN apk update && apk add --no-cache \
     libidn2-static \
     libunistring-static \
     zstd-static
-
+    
 WORKDIR /app
